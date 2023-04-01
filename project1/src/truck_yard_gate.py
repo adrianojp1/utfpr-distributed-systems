@@ -39,7 +39,7 @@ def main():
         truck_id_in, state_in, truck_load_in = ipt.split(' ')
 
         truck_id = int(truck_id_in)
-        truck_state = 'ENTERING' if state_in == '0' else 'LEAVING'
+        truck_state = 'ENTERING' if state_in == '1' else 'LEAVING'
         truck_load = int(truck_load_in[:-1])
 
         truck_event = TruckEvent(truck_id, truck_state, truck_load)
