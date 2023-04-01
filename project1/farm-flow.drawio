@@ -1,1 +1,79 @@
-<mxfile host="app.diagrams.net" modified="2023-03-29T00:19:46.178Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36" etag="RjIHkFy0WgEBXbECMLEJ" version="21.0.10" type="device"><diagram name="Página-1" id="-8GyXOcMVoyH6piVLxix">3VlNc5swEP01PmbGSAbsY+zEaTvJJW6n01NHRguoFsgjy1/99RUgwFg4k0zskvhk8bRard6+lQTu4Umye5BkGT8JCryH+nTXw3c9hBy/7+ufDNkXyGDUL4BIMmqMamDG/oIBS7M1o7BqGCohuGLLJhiINIVANTAipdg2zULBm7MuSQQWMAsIt9GfjKq4QIfIr/EvwKK4nNnxRkVPQkpjs5JVTKjYHkD4vocnUghVtJLdBHhGXslLMW56orcKTEKqXjPAG4T9xTfm/MDR75tJ8sweMbopg9sQvjYrHkuxAGliVvuSCCnWKYXMV7+Hx9uYKZgtSZD1bnXqNRarhOsnRzcJZ1Gq24GOTfvC4w1IxTSrt6ZDiWxEyDifCC5kPgWmBIZhoPGVymI46PGCIcxD3WOi1d5gd5IHp2JXyxJEAkrutYkZgLBZ877SaPG8rfNb2cQHua00SYymosp3TbtuGObfkIXS8Um6hVSxiERK+KPImMtJ/gNK7U3FkLUSzRQUHoFa8j7iSc8q1jKAl8IzdUdkBOoFO7+ddwmcKLZpxnF+Dp2r4HDUKYfWZqDkOlis3rcZHFX5FE396eTiVe42qxw5rlXlzqilyvHFihx/aIGiTyHQwVVwOOySQ2QV+RxIeg01jjuvcVuema5m5rEW532Njj+SgPErBXwiL/9HwNgS8PfslPpFJH0gCl4QsvNmIYdhiILWKyn15p7rnUfIN4Ojw6pvX0kd1CJk71JC9j65kN1XChl1KWTXEvI424lnjIsrEDHuXMS+xe+UA6gnkuq39iRb1jlZpi4M6aCN5SGaY+9MLHvO0dvroGuWhxbLD5KwdKZEsHiKkmsgGXtdkzyypUxkAvJ2ubwCfquLXGf8Op5FcP7q+1UPutW4g/StQ7v2uI5kPJe6FamcpuzGkZtwIBuWRq1mXBDjKFupa6VMU6maeWnyTyEk69znYb5qtPzexiFULV/bEkZpfkS3iaF5bFOyiivtrLSlXtKzSUC/hh7zie7c8+hhdLSnufY9vu0afzk12CdHnUH/E2bwounCLUdQW7oGb0+Xfqw/kOd9B38z4Pt/</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2023-04-01T23:36:34.701Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36" etag="uMtxQS8zubGe4FDxDExs" version="21.1.1" type="device">
+  <diagram name="Página-1" id="-8GyXOcMVoyH6piVLxix">
+    <mxGraphModel dx="1776" dy="534" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="64f0kJi1U3g_-CmRiL32-20" value="RabbitMQ" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=top;fillColor=#ffcc99;strokeColor=#36393d;" parent="1" vertex="1">
+          <mxGeometry x="230" y="170" width="230" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="64f0kJi1U3g_-CmRiL32-10" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="AmcoNmHRITDIp0mbrl3E-19" target="AmcoNmHRITDIp0mbrl3E-17" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="440" y="215.96923076923088" as="sourcePoint" />
+            <mxPoint x="640" y="175.53846153846155" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="64f0kJi1U3g_-CmRiL32-11" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.005;entryY=0.63;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="AmcoNmHRITDIp0mbrl3E-19" target="AmcoNmHRITDIp0mbrl3E-15" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="425.14758179231876" y="245" as="sourcePoint" />
+            <mxPoint x="641.3636363636365" y="275.59440559440566" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="64f0kJi1U3g_-CmRiL32-13" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.005;entryY=0.63;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="AmcoNmHRITDIp0mbrl3E-20" target="AmcoNmHRITDIp0mbrl3E-15" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="440" y="316.1657237936772" as="sourcePoint" />
+            <mxPoint x="641.3636363636365" y="284.40559440559434" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="64f0kJi1U3g_-CmRiL32-14" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="AmcoNmHRITDIp0mbrl3E-20" target="AmcoNmHRITDIp0mbrl3E-18" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="440" y="344.0307692307691" as="sourcePoint" />
+            <mxPoint x="640" y="384.46153846153845" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="64f0kJi1U3g_-CmRiL32-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="AmcoNmHRITDIp0mbrl3E-13" target="AmcoNmHRITDIp0mbrl3E-19" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="90" y="230" as="sourcePoint" />
+            <mxPoint x="250" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="64f0kJi1U3g_-CmRiL32-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="AmcoNmHRITDIp0mbrl3E-14" target="AmcoNmHRITDIp0mbrl3E-20" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="330" as="sourcePoint" />
+            <mxPoint x="250" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="64f0kJi1U3g_-CmRiL32-16" value="truckId: 123,&lt;br&gt;state: leaving,&lt;br&gt;load: 50%" style="text;html=1;strokeColor=default;fillColor=default;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;dashed=1;spacingRight=0;spacingLeft=5;" parent="1" vertex="1">
+          <mxGeometry x="90" y="155" width="90" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="64f0kJi1U3g_-CmRiL32-17" value="load: 70%" style="text;html=1;strokeColor=default;fillColor=default;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;dashed=1;spacingLeft=5;" parent="1" vertex="1">
+          <mxGeometry x="90" y="340" width="90" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="AmcoNmHRITDIp0mbrl3E-1" value="" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.topic;fillColor=#5294CF;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="325.06" y="255" width="39.88" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="AmcoNmHRITDIp0mbrl3E-13" value="TruckYardGate" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.door_lock;fillColor=#5294CF;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="-10" y="200" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="AmcoNmHRITDIp0mbrl3E-14" value="BeansSilo" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.sensor;fillColor=#5294CF;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="-4" y="302.5" width="48" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="AmcoNmHRITDIp0mbrl3E-15" value="FarmerApp" style="sketch=0;html=1;dashed=0;whitespace=wrap;fillColor=#2875E2;strokeColor=#ffffff;points=[[0.005,0.63,0],[0.1,0.2,0],[0.9,0.2,0],[0.5,0,0],[0.995,0.63,0],[0.72,0.99,0],[0.5,1,0],[0.28,0.99,0]];verticalLabelPosition=bottom;align=center;verticalAlign=top;shape=mxgraph.kubernetes.icon;prIcon=user" vertex="1" parent="1">
+          <mxGeometry x="645.25" y="256" width="50" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="AmcoNmHRITDIp0mbrl3E-17" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;FleetManagement&lt;/span&gt;" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.rds_db_instance_read_replica;fillColor=#2E73B8;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="645.25" y="149" width="49.5" height="66" as="geometry" />
+        </mxCell>
+        <mxCell id="AmcoNmHRITDIp0mbrl3E-18" value="GrainStockMgmt" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.rds_db_instance_read_replica;fillColor=#2E73B8;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="645.25" y="345" width="49.5" height="66" as="geometry" />
+        </mxCell>
+        <mxCell id="AmcoNmHRITDIp0mbrl3E-19" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;trucks&lt;/span&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" vertex="1" parent="1">
+          <mxGeometry x="250" y="215" width="190" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AmcoNmHRITDIp0mbrl3E-20" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;beans&lt;/span&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" vertex="1" parent="1">
+          <mxGeometry x="250" y="315" width="190" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
