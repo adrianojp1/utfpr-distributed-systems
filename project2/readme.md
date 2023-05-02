@@ -2,7 +2,7 @@ Aplicativo de Leilão utilizando pyro5
 
 Instalação do Pyro:
 ```
-python -m pip install Pyro5
+python -m pip install -r requirements.txt
 ```
 
 Iniciar o servidor de nomes:

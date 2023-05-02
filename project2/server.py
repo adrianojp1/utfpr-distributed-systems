@@ -1,48 +1,183 @@
 #!/usr/bin/env python
 
-from Pyro5.api import expose, behavior, serve
+import base64
+from datetime import datetime
+import socket
+from Pyro5.api import expose, behavior, Daemon, Proxy
 import Pyro5.errors
+import pytz
+from crypto import verify
+import traceback
+
+
+from models import AuctionBid, AuctionProduct, AuctionUser, Product, User
+
+
+Pyro5.config.SERVERTYPE = 'multiplex'
+Pyro5.config.POLLTIMEOUT = 3
+
+server_pyroname = 'project2.auction.server'
+timezone = pytz.timezone('America/Sao_Paulo')
 
 
 @expose
 @behavior(instance_mode='single')
-class Auction(object):
+class AuctionServer(object):
+    products: dict[int, AuctionProduct]
+    users: dict[str, AuctionUser]
+
     def __init__(self):
         self.products = {}
-        self.users = {} # remote_object_uri => (name, public_key, callback)
+        self.users = {}
+        self.id_gen = generate_id()
 
-
-    def join(self, name, publick_key, remote_object_uri, callback):
-        print(name, publick_key, remote_object_uri, callback)
-        # callback é o objeto cliente
-        self.users[remote_object_uri] = (name, publick_key, callback)
-
+    def join(self, user_data: str):
+        user = User.from_json(user_data)
+        auction_user = AuctionUser(user)
+        self.users[auction_user.uri] = auction_user
+        print(f'Usuário registrado: {auction_user.name}')
+        return True
+    
+    def leave(self, user_uri):
+        if user_uri in self.users:
+            name = self.users[user_uri].name
+            print(f'Usuário excluído: {name}')
+            del self.users[user_uri]
 
     def get_active_auctions(self):
-        return self.products
+        active_auctions = [str(product)
+                           for product in self.products.values() if product.active]
+        return active_auctions
 
+    def register_product(self, product_data: str):
+        product = Product.from_json(product_data)
+        auction_product = AuctionProduct(product)
 
-    def register_product(self, product_data):
-        product_id, product_name, product_description, initial_price, end_date = product_data
-        self.products[product_id] = {
-                "name": product_name,
-                "desciption": product_description,
-                "initial_price": initial_price,
-                "actual_price": initial_price,
-                "current_winner": None,
-                "end_date": end_date,
-        }
-        print(f'Produto recebido: {product_data}')
-        return True  # TODO: Mudar isso quando possuir autenticação
+        auction_product._id = next(self.id_gen)
+        self.products[auction_product._id] = auction_product
 
-    def bid(self, product_id, price, uri):
-        if (price > self.products[product_id]["actual_price"]):
-            self.products[product_id]["actual_price"] = price
-            self.products[product_id]["current_winner"] = uri # TODO: autenticar o lance
+        print(f'Produto registrado. {str(auction_product)}')
+
+        for user_uri in self.users.keys():
+            self.notify_user(
+                user_uri,
+                f'Novo produto registrado. {str(auction_product)}')
+
+        return True
+
+    def bid(self, bid_data: str, sign_dict: dict):
+        try:
+            auction_bid = AuctionBid.from_json(bid_data)
+
+            user_uri = auction_bid.user_uri
+            user_key = self.users[user_uri].public_key
+            signature = base64.b64decode(sign_dict['data'])
+            verified = verify(user_key, bid_data.encode(), signature)
+
+            bid_prod_id = int(auction_bid.product_id)
+            bid_value = auction_bid.value
+
+            if not verified:
+                error = 'Erro: Assinatura digital inválida'
+                self.notify_user(user_uri, error)
+                return False
+
+            if bid_prod_id not in self.products:
+                error = 'Erro: Produto não registrado no leilão'
+                self.notify_user(user_uri, error)
+                return False
+            
+            auction_product = self.products[bid_prod_id]
+            
+            if not auction_product.active:
+                error = 'Erro: Este produto já saiu do leilão'
+                self.notify_user(user_uri, error)
+                return False
+            
+            if bid_value <= auction_product.current_price:
+                error = 'Erro: Valor do lance deve ser maior que o atual'
+                self.notify_user(user_uri, error)
+                return False
+
+            auction_product.current_price = bid_value
+            auction_product.current_winner_uri = user_uri
+            auction_product.subscribers.add(user_uri)
+
+            for user_uri in auction_product.subscribers:
+                self.notify_user(
+                    user_uri,
+                    f'Novo lance em produto. id: {auction_product._id}, valor: {auction_product.current_price}')
+
             return True
-        return False
+        except:
+            traceback.print_exc()
+            return False
+
+    def notify_user(self, user_uri, msg):
+        user = Proxy(user_uri)
+        try:
+            user.notify(msg)
+        except:
+            pass
+
+    def conditional_loop(self):
+        now = datetime.now(timezone)
+
+        for product in self.products.values():
+
+            if product.active and product.end_date <= now:
+                product.active = False
+
+                if product.current_winner_uri is None:
+                    msg = f'Leilão finalizado para produto, nenhum lance foi dado. ' + \
+                        f'id: {product._id}' + \
+                        f'nome: {product.name}'
+                else:
+                    winner = self.users[product.current_winner_uri]
+                    msg = f'Leilão finalizado para produto. ' + \
+                        f'id: {product._id} ' + \
+                        f'nome: {product.name} ' + \
+                        f'ganhador: {winner.name} ' + \
+                        f'valor negociado: {product.current_price}'
+
+                for user_uri in product.subscribers:
+                    self.notify_user(user_uri, msg)
+
+        return True
 
 
-serve({
-    Auction: 'project3.auction.server'
-})
+def generate_id():
+    _id = 1
+    while True:
+        yield _id
+        _id += 1
+
+
+def main():
+    hostname = socket.gethostname()
+    my_ip = Pyro5.socketutil.get_ip_address(None, workaround127=True)
+    nameserver_uri, name_server_daemon, broadcast_server = Pyro5.nameserver.start_ns()
+    # assert broadcast_server is not None, "expect a broadcast server to be created"
+    print(f'Name server uri: {nameserver_uri}')
+
+    auction_server = AuctionServer()
+
+    with Daemon() as daemon:
+        server_uri = daemon.register(auction_server)
+
+        name_server_daemon.nameserver.register(server_pyroname, server_uri)
+        print('Auction server pyro:')
+        print(f'{server_pyroname} : {server_uri}')
+
+        daemon.combine(name_server_daemon)
+        # daemon.combine(broadcast_server)
+
+        daemon.requestLoop(auction_server.conditional_loop)
+
+    name_server_daemon.close()
+    # broadcast_server.close()
+    daemon.close()
+
+
+if __name__ == '__main__':
+    main()
