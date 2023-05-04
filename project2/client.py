@@ -25,7 +25,7 @@ class UserClient(object):
     @expose
     @oneway
     def notify(self, msg):
-        print('')
+        print()
         print(f'Notificação: {msg}')
 
     def list_active_auctions(self):
@@ -68,7 +68,7 @@ class UserClient(object):
             "Lance registrado com sucesso!!" if success else "Erro ao registrar lance!")
 
     def show_menu(self):
-        print('')
+        print()
         print('Selecione uma das opções:')
         print('0. Consultar leilões ativos')
         print('1. Cadastrar produto para leilão')

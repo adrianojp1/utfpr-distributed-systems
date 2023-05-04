@@ -2,7 +2,6 @@
 
 import base64
 from datetime import datetime
-import socket
 from Pyro5.api import expose, behavior, Daemon, Proxy
 import Pyro5.errors
 import pytz
@@ -20,7 +19,6 @@ server_pyroname = 'project2.auction.server'
 timezone = pytz.timezone('America/Sao_Paulo')
 
 
-@expose
 @behavior(instance_mode='single')
 class AuctionServer(object):
     products: dict[int, AuctionProduct]
@@ -31,24 +29,28 @@ class AuctionServer(object):
         self.users = {}
         self.id_gen = generate_id()
 
+    @expose
     def join(self, user_data: str):
         user = User.from_json(user_data)
         auction_user = AuctionUser(user)
         self.users[auction_user.uri] = auction_user
         print(f'Usuário registrado: {auction_user.name}')
         return True
-    
+
+    @expose
     def leave(self, user_uri):
         if user_uri in self.users:
             name = self.users[user_uri].name
             print(f'Usuário excluído: {name}')
             del self.users[user_uri]
 
+    @expose
     def get_active_auctions(self):
         active_auctions = [str(product)
                            for product in self.products.values() if product.active]
         return active_auctions
 
+    @expose
     def register_product(self, product_data: str):
         product = Product.from_json(product_data)
         auction_product = AuctionProduct(product)
@@ -65,6 +67,7 @@ class AuctionServer(object):
 
         return True
 
+    @expose
     def bid(self, bid_data: str, sign_dict: dict):
         try:
             auction_bid = AuctionBid.from_json(bid_data)
@@ -86,14 +89,14 @@ class AuctionServer(object):
                 error = 'Erro: Produto não registrado no leilão'
                 self.notify_user(user_uri, error)
                 return False
-            
+
             auction_product = self.products[bid_prod_id]
-            
+
             if not auction_product.active:
                 error = 'Erro: Este produto já saiu do leilão'
                 self.notify_user(user_uri, error)
                 return False
-            
+
             if bid_value <= auction_product.current_price:
                 error = 'Erro: Valor do lance deve ser maior que o atual'
                 self.notify_user(user_uri, error)
@@ -154,10 +157,7 @@ def generate_id():
 
 
 def main():
-    hostname = socket.gethostname()
-    my_ip = Pyro5.socketutil.get_ip_address(None, workaround127=True)
-    nameserver_uri, name_server_daemon, broadcast_server = Pyro5.nameserver.start_ns()
-    # assert broadcast_server is not None, "expect a broadcast server to be created"
+    nameserver_uri, name_server_daemon, _ = Pyro5.nameserver.start_ns()
     print(f'Name server uri: {nameserver_uri}')
 
     auction_server = AuctionServer()
@@ -170,12 +170,9 @@ def main():
         print(f'{server_pyroname} : {server_uri}')
 
         daemon.combine(name_server_daemon)
-        # daemon.combine(broadcast_server)
-
         daemon.requestLoop(auction_server.conditional_loop)
 
     name_server_daemon.close()
-    # broadcast_server.close()
     daemon.close()
 
 
