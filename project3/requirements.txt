@@ -1,0 +1,5 @@
+flask-sse==1.0.0
+gunicorn==20.1.0
+gevent==22.10.2
+dataclasses-json==0.5.7
+pytz==2023.3
