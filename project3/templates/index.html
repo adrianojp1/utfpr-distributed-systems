@@ -1,65 +1,154 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="{{ url_for('static', filename='client.js') }}"></script>
 
-<head>
-  <title>Cliente do Leilão</title>
-</head>
+    <title>Cliente do Leilão</title>
+  </head>
 
-<body>
-  <script src="{{ url_for('static', filename='client.js') }}"></script>
-  
-  <h1>Cliente do Leilão</h1>
+  <body>
+    <h1>Cliente do Leilão</h1>
 
-  <div id="join-div">
-    <h2>Entrar no leil&atilde;o</h2>
-
-    <p>Nome:&nbsp;<input maxlength="30" id="username-input" name="username-input" size="30" type="text" /></p>
-
-    <p><input name="register-user-button" type="submit" value="Entrar" onclick="joinUser()"/></p>
-  </div>
-
-  <div id="main-div">
-    <div><input name="list-auctions-button" type="button" value="Consultar leilões ativos" /></div>
-
+    <div id="profile-div">
+      <h2>Bem Vindo</h2>
+    </div>
     <hr />
+    <div id="join-div">
+      <h2>Entrar no leil&atilde;o</h2>
 
-    <div id="register-product-div">
-      <h3>Cadastrar produto para leil&atilde;o:</h3>
-
-      <p>Nome:&nbsp;<input maxlength="30" name="register-product-name" size="30" type="text" /></p>
-
-      <p>Descri&ccedil;&atilde;o:</p>
-
-      <p><textarea cols="30" name="register-product-desc" rows="4"></textarea></p>
-
-      <p>Pre&ccedil;o inicial (R$):&nbsp;<input maxlength="30" name="register-product-price" size="30" type="text"
-          value="0,0" /></p>
-
-      <p>Data final do leil&atilde;o:&nbsp;<input maxlength="30" name="register-product-date" size="30" type="text" />
+      <p>
+        Nome:&nbsp;<input
+          maxlength="30"
+          id="username-input"
+          name="username-input"
+          size="30"
+          type="text"
+        />
       </p>
 
+      <p>
+        <input
+          name="register-user-button"
+          type="submit"
+          value="Entrar"
+          onclick="joinUser()"
+        />
+      </p>
+    </div>
+
+    <div id="main-div" hidden>
       <div>
-        <input name="register-product-button" type="submit" value="Cadastrar" />
+        <input
+          name="list-auctions-button"
+          type="button"
+          value="Consultar leilões ativos"
+          onclick="getActiveAuctions()"
+        />
       </div>
 
-    </div>
-    <hr />
+      <hr />
 
-    <div id="bid-auction-div">
-      <h3>Efetuar lance em um produto</h3>
+      <div id="register-product-div">
+        <h3>Cadastrar produto para leil&atilde;o:</h3>
 
-      <p>Código do produto:&nbsp;<input maxlength="30" name="bid-auction-product-id" size="30" type="text" /></p>
+        <p>
+          Nome:&nbsp;<input
+            maxlength="30"
+            name="register-product-name"
+            id="register-product-name"
+            size="30"
+            type="text"
+          />
+        </p>
 
-      <p>Valor (R$):&nbsp;<input maxlength="30" name="bid-auction-value" size="30" type="text" value="0,0" /></p>
+        <p>Descri&ccedil;&atilde;o:</p>
 
-      <div>
-        <input name="bid-auction-button" type="submit" value="Efetuar lance" />
+        <p>
+          <textarea
+            cols="30"
+            name="register-product-desc"
+            rows="4"
+            id="register-product-desc"
+          ></textarea>
+        </p>
+
+        <p>
+          Pre&ccedil;o inicial (R$):&nbsp;<input
+            maxlength="30"
+            name="register-product-price"
+            id="register-product-price"
+            size="30"
+            type="text"
+            value="0,0"
+          />
+        </p>
+
+        <p>
+          Data final do leil&atilde;o:&nbsp;<input
+            maxlength="30"
+            name="register-product-date"
+            id="register-product-date"
+            type="datetime-local"
+            value="2023-05-29T12:00"
+            min="2023-05-22T12:00"
+            max="2023-12-31T12:00"
+          />
+        </p>
+
+        <div>
+          <input
+            name="register-product-button"
+            id="register-product-button"
+            type="submit"
+            value="Cadastrar"
+            onclick="registerProduct()"
+          />
+        </div>
       </div>
+      <hr />
 
+      <div id="bid-auction-div">
+        <h3>Efetuar lance em um produto</h3>
+
+        <p>
+          Código do produto:&nbsp;<input
+            maxlength="30"
+            name="bid-auction-product-id"
+            id="bid-auction-product-id"
+            size="30"
+            type="text"
+          />
+        </p>
+
+        <p>
+          Valor (R$):&nbsp;<input
+            maxlength="30"
+            name="bid-auction-value"
+            id="bid-auction-value"
+            size="30"
+            type="text"
+            value="0,0"
+          />
+        </p>
+
+        <div>
+          <input
+            name="bid-auction-button"
+            type="submit"
+            value="Efetuar lance"
+            onclick="bidAuction()"
+          />
+        </div>
+      </div>
+      <hr />
     </div>
-    <hr />
-  </div>
-
-</body>
-
+  </body>
 </html>

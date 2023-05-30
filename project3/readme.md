@@ -1,6 +1,16 @@
-Aplicativo de Leilão utilizando Flask SSE
+Auction Application using Flash with SSE
+
+To install requirements
+```
+make install
+```
+
+To run redis
+```
+make up
+```
 
 To run the server:
 ```
-gunicorn app:app --worker-class gevent --bind 127.0.0.1:8000
+make run
 ```

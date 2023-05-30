@@ -5,9 +5,9 @@ from server import AuctionServer
 
 app = Flask(__name__)
 app.config['REDIS_URL'] = 'redis://localhost'
-app.register_blueprint(sse, url_prefix='/notifications')
+app.register_blueprint(sse, url_prefix='/stream')
 
-server = AuctionServer()
+server = AuctionServer(app)
 
 @app.route('/')
 def index():
@@ -20,8 +20,10 @@ def join():
 @app.route('/product', methods=['GET', 'POST'])
 def product():
     if request.method == 'GET':
+        print("Get active auctions")
         return server.get_active_auctions()
     elif request.method == 'POST':
+        print("register product")
         return server.register_product()
 
 @app.route('/bid', methods=['POST'])

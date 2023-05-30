@@ -47,7 +47,7 @@ class ProductRequest(DataClassJsonMixin):
         description: str,
         initial_price: float,
         end_date: datetime,
-        owner_id: int
+        owner_id: int,
     ):
         self.name = name
         self.description = description
@@ -84,8 +84,17 @@ class AuctionProduct(DataClassJsonMixin):
         self.subscribers.add(self.owner_id)
 
     def __str__(self) -> str:
-        return f'id: {self._id}, ' + \
-            f'nome: {self.name}, ' + \
-            f'descrição: {self.description}, ' + \
-            f'preço: {self.current_price}, ' + \
-            f'final do leilão: {self.end_date}'
+        return f"""
+id: {self._id}
+nome: {self.name}
+descrição: {self.description}
+preço: {self.current_price}
+final do leilão: {self.end_date}
+
+"""
+
+        # return f'id: {self._id}, ' + \
+        #     f'nome: {self.name}, ' + \
+        #     f'descrição: {self.description}, ' + \
+        #     f'preço: {self.current_price}, ' + \
+        #     f'final do leilão: {self.end_date}'
