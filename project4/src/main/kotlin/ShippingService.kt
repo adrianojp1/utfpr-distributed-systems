@@ -18,11 +18,13 @@ class ShippingService {
 
     private var shippingId = 1
 
+    private var forceErrorOnConsumer = false
+
     @Suppress("DuplicatedCode")
     fun run() {
         println("Running ShippingService")
 
-        Thread { requestConsumer.consume(this::consumeShippingRequest) }.start()
+        Thread { requestConsumer.consume(this::consumeShippingRequest, this::rollback) }.start()
         Thread.sleep(500)
 
         while (true) {
@@ -35,7 +37,7 @@ class ShippingService {
         }
     }
 
-    private fun consumeShippingRequest(body: ByteArray) {
+    private fun consumeShippingRequest(body: ByteArray, changeLog: MutableList<Change>) {
         val request = jsonMapper.readValue(body, ShippingRequest::class.java)
         println("Received shipping: $request")
 
@@ -43,7 +45,9 @@ class ShippingService {
         val productCount = products[productId]
         val productCanBeShipped = productCount != null && productCount > 0
 
+        changeLog.add(Change("shippingId", null, this.shippingId))
         val shippingId = this.shippingId++
+
         val now = Date()
         val shipping = Shipping(
             id = shippingId,
@@ -55,13 +59,39 @@ class ShippingService {
         )
 
         if (productCanBeShipped) {
-            products[productId] = productCount!! - 1
+            changeLog.add(Change("product", productId, productCount!!))
+            products[productId] = productCount - 1
             println("Product id $productId subtracted from stock")
         }
+
+        changeLog.add(Change("shipping", shippingId, shippings[shippingId]))
         shippings[shippingId] = shipping
 
+        if (forceErrorOnConsumer) {
+            throw Exception("ShippingService - consumer error")
+        }
         println("Order shipped: $shipping")
         shippingProducer.publish(jsonMapper.writeValueAsString(shipping))
+    }
+
+    @Suppress("kotlin:S6531")
+    private fun rollback(changeLog: List<Change>) {
+        println("Rolling back changes")
+        changeLog.reversed().forEach { change ->
+            when (change.entityType) {
+                "shippingId" -> this.shippingId = change.oldValue as Int
+
+                "product" -> products[change.entityId!!] = change.oldValue as Int
+
+                "shipping" -> {
+                    if (change.oldValue == null) {
+                        shippings.remove(change.entityId)
+                    } else {
+                        shippings[change.entityId!!] = change.oldValue as Shipping
+                    }
+                }
+            }
+        }
     }
 
     private fun menu() {
@@ -71,15 +101,17 @@ class ShippingService {
             1. List shipping's
             2. List products
             3. Update product count
-            4. Exit
+            4. Toggle force error on consumer
+            5. Exit
             
-        """.trimIndent()
+            """.trimIndent()
         )
         when (readln().toInt()) {
             1 -> listShippings()
             2 -> listProducts()
             3 -> updateProductCount()
-            4 -> exit()
+            4 -> toggleForceErrorOnConsumer()
+            5 -> exit()
         }
     }
 
@@ -100,6 +132,11 @@ class ShippingService {
         val (productId, count) = readln().split(" ")
         products[productId.toInt()] = count.toInt()
         println()
+    }
+
+    private fun toggleForceErrorOnConsumer() {
+        forceErrorOnConsumer = !forceErrorOnConsumer
+        println("Force error on consumer: $forceErrorOnConsumer")
     }
 
     private fun exit() {

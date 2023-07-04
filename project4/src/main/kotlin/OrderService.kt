@@ -17,11 +17,14 @@ class OrderService {
 
     private var orderId = 1
 
+    private var forceErrorOnNewOrder = false
+    private var forceErrorOnConsumer = false
+
     @Suppress("DuplicatedCode")
     fun run() {
         println("Running OrderService")
 
-        Thread { shippingConsumer.consume(this::consumeShipping) }.start()
+        Thread { shippingConsumer.consume(this::consumeShipping, this::rollback) }.start()
         Thread.sleep(500)
 
         while (true) {
@@ -35,7 +38,7 @@ class OrderService {
     }
 
     @Suppress("kotlin:S6611")
-    private fun consumeShipping(body: ByteArray) {
+    private fun consumeShipping(body: ByteArray, changeLog: MutableList<Change>) {
         val shipping = jsonMapper.readValue(body, Shipping::class.java)
         println("Received shipping: $shipping")
 
@@ -46,22 +49,51 @@ class OrderService {
             updatedAt = Date()
         )
 
-        println("Updated order: $updatedOrder")
+        changeLog.add(Change("order", orderId, order))
         orders[shipping.orderId] = updatedOrder
+
+        if (forceErrorOnConsumer) {
+            throw Exception("OrderService - consumer error")
+        }
+        println("Updated order: $updatedOrder")
+    }
+
+    @Suppress("kotlin:S6531")
+    private fun rollback(changeLog: List<Change>) {
+        println("Rolling back changes")
+        changeLog.reversed().forEach { change ->
+            when (change.entityType) {
+                "orderId" -> this.orderId = change.oldValue as Int
+
+                "order" -> {
+                    if (change.oldValue == null) {
+                        orders.remove(change.entityId)
+                    } else {
+                        orders[change.entityId!!] = change.oldValue as Order
+                    }
+                }
+            }
+        }
     }
 
     private fun menu() {
-        println("""
+        println(
+            """
             Choose an option:
             1. List orders
             2. Make new order
-            3. Exit
+            3. Toggle force error on new order
+            4. Toggle force error on consumer
+            5. Exit
             
-        """.trimIndent())
+        """.trimIndent()
+        )
         when (readln().toInt()) {
             1 -> listOrders()
             2 -> makeNewOrder()
-            3 -> exit()
+            3 -> toggleForceErrorNewOrder()
+            4 -> toggleForceErrorOnConsumer()
+            5 -> exit()
         }
     }
 
@@ -72,24 +104,48 @@ class OrderService {
     }
 
     private fun makeNewOrder() {
-        println("Enter the product id to order:")
+        val changeLog = mutableListOf<Change>()
+        try {
+            println("Enter the product id to order:")
 
-        val productId = readln().toInt()
-        val orderId = this.orderId++
-        val now = Date()
+            val productId = readln().toInt()
 
-        val order = Order(orderId, productId, OrderState.PENDING, now, now)
-        orders[order.id] = order
+            changeLog.add(Change("orderId", null, this.orderId))
+            val orderId = this.orderId++
+            val now = Date()
 
-        val shippingRequest = ShippingRequest(order.id, order.productId, order.requestedAt)
-        val json = jsonMapper.writeValueAsString(shippingRequest)
-        requestProducer.publish(json)
+            changeLog.add(Change("order", orderId, null))
+            val order = Order(orderId, productId, OrderState.PENDING, now, now)
+            orders[order.id] = order
 
-        println("""
-            New order made: $order
-            Shipping request published: $shippingRequest
-            
-        """.trimIndent())
+            val shippingRequest = ShippingRequest(order.id, order.productId, order.requestedAt)
+            val json = jsonMapper.writeValueAsString(shippingRequest)
+
+            if (forceErrorOnNewOrder) {
+                throw Exception("OrderService - new order error")
+            }
+            requestProducer.publish(json)
+
+            println(
+                """
+                New order made: $order
+                Shipping request published: $shippingRequest
+                
+                """.trimIndent()
+            )
+        } catch (ex: Exception) {
+            rollback(changeLog)
+        }
+    }
+
+    private fun toggleForceErrorNewOrder() {
+        forceErrorOnNewOrder = !forceErrorOnNewOrder
+        println("Force error on new order: $forceErrorOnNewOrder")
+    }
+
+    private fun toggleForceErrorOnConsumer() {
+        forceErrorOnConsumer = !forceErrorOnConsumer
+        println("Force error on consumer: $forceErrorOnConsumer")
     }
 
     private fun exit() {
