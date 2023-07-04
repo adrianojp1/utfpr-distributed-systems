@@ -5,6 +5,7 @@ import com.rabbitmq.client.ConnectionFactory
 import java.nio.charset.StandardCharsets
 
 class Producer(private val exchange: String) {
+
     private val factory = ConnectionFactory()
     private val connectionName = "amqp://guest:guest@localhost:5672/"
 

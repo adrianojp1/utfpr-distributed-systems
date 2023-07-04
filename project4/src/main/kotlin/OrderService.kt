@@ -10,17 +10,19 @@ class OrderService {
     private val jsonMapper = jacksonObjectMapper()
 
     private val shippingRequestsExchange = "shipping-requests"
-    private val requestRequest = Producer(shippingRequestsExchange)
+    private val requestProducer = Producer(shippingRequestsExchange)
 
     private val shippingsExchange = "shippings"
     private val shippingConsumer = Consumer(shippingsExchange)
+
+    private var orderId = 1
 
     @Suppress("DuplicatedCode")
     fun run() {
         println("Running OrderService")
 
         Thread { shippingConsumer.consume(this::consumeShipping) }.start()
-        Thread.sleep(100)
+        Thread.sleep(500)
 
         while (true) {
             try {
@@ -54,6 +56,7 @@ class OrderService {
             1. List orders
             2. Make new order
             3. Exit
+            
         """.trimIndent())
         when (readln().toInt()) {
             1 -> listOrders()
@@ -72,7 +75,7 @@ class OrderService {
         println("Enter the product id to order:")
 
         val productId = readln().toInt()
-        val orderId = generateOrderId()
+        val orderId = this.orderId++
         val now = Date()
 
         val order = Order(orderId, productId, OrderState.PENDING, now, now)
@@ -80,7 +83,7 @@ class OrderService {
 
         val shippingRequest = ShippingRequest(order.id, order.productId, order.requestedAt)
         val json = jsonMapper.writeValueAsString(shippingRequest)
-        requestRequest.publish(json)
+        requestProducer.publish(json)
 
         println("""
             New order made: $order
@@ -88,8 +91,6 @@ class OrderService {
             
         """.trimIndent())
     }
-
-    private fun generateOrderId(): Int = if (orders.isEmpty()) 1 else orders.keys.max() + 1
 
     private fun exit() {
         println("Exited")

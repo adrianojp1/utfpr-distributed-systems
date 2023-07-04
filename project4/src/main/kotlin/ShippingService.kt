@@ -16,14 +16,14 @@ class ShippingService {
     private val shippingRequestsExchange = "shipping-requests"
     private val requestConsumer = Consumer(shippingRequestsExchange)
 
-    private fun generateShippingId(): Int = if (shippings.isEmpty()) 1 else shippings.keys.max() + 1
+    private var shippingId = 1
 
     @Suppress("DuplicatedCode")
     fun run() {
         println("Running ShippingService")
 
         Thread { requestConsumer.consume(this::consumeShippingRequest) }.start()
-        Thread.sleep(100)
+        Thread.sleep(500)
 
         while (true) {
             try {
@@ -43,7 +43,7 @@ class ShippingService {
         val productCount = products[productId]
         val productCanBeShipped = productCount != null && productCount > 0
 
-        val shippingId = generateShippingId()
+        val shippingId = this.shippingId++
         val now = Date()
         val shipping = Shipping(
             id = shippingId,
@@ -54,7 +54,10 @@ class ShippingService {
             shippedAt = now
         )
 
-        productCount?.let { products[productId] = it - 1 }
+        if (productCanBeShipped) {
+            products[productId] = productCount!! - 1
+            println("Product id $productId subtracted from stock")
+        }
         shippings[shippingId] = shipping
 
         println("Order shipped: $shipping")
